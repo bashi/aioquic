@@ -372,6 +372,7 @@ class QuicTransportParameters:
     version_information: QuicVersionInformation | None = None
     max_datagram_frame_size: int | None = None
     quantum_readiness: bytes | None = None
+    reset_stream_at: bool | None = None
 
 
 PARAMS = {
@@ -397,6 +398,8 @@ PARAMS = {
     # extensions
     0x0020: ("max_datagram_frame_size", int),
     0x0C37: ("quantum_readiness", bytes),
+    # https://datatracker.ietf.org/doc/html/draft-ietf-quic-reliable-stream-reset-11#section-8.1
+    0x1D: ("reset_stream_at", bool),
 }
 
 
@@ -559,6 +562,7 @@ class QuicFrameType(IntEnum):
     HANDSHAKE_DONE = 0x1E
     DATAGRAM = 0x30
     DATAGRAM_WITH_LENGTH = 0x31
+    RESET_STREAM_AT = 0x24
 
 
 NON_ACK_ELICITING_FRAME_TYPES = frozenset(
@@ -594,6 +598,14 @@ class QuicResetStreamFrame:
     error_code: int
     final_size: int
     stream_id: int
+
+
+@dataclass
+class QuicResetStreamAtFrame:
+    error_code: int
+    final_size: int
+    stream_id: int
+    reliable_size: int
 
 
 @dataclass

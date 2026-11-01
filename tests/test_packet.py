@@ -484,6 +484,19 @@ class ParamsTest(TestCase):
         push_quic_preferred_address(buf, preferred_address)
         self.assertEqual(buf.data, data)
 
+    def test_params_reset_stream_at(self):
+        data = bytes.fromhex("1d00")
+
+        # parse
+        buf = Buffer(data=data)
+        params = pull_quic_transport_parameters(buf)
+        self.assertEqual(params, QuicTransportParameters(reset_stream_at=True))
+
+        # serialize
+        buf = Buffer(capacity=len(data))
+        push_quic_transport_parameters(buf, params)
+        self.assertEqual(buf.data, data)
+
 
 class FrameTest(TestCase):
     def test_ack_frame(self) -> None:
